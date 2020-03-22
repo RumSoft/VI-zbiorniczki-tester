@@ -1,3 +1,4 @@
+//#region variables
 var inp = new Array(7)
   .fill("input")
   .map((x, i) => `${x}${i + 1}`)
@@ -17,18 +18,16 @@ var variables = document.getElementById("variables");
 var code = document.getElementById("code");
 var deltatime = document.getElementById("deltatime");
 var stantextbox = document.getElementById("stantextbox");
+var logger = document.getElementById("logger");
 
-inp.forEach((x, i) => x.addEventListener("click", () => toggleInput(i)));
+//#endregion
 
+//#region input functions
 const offInputColor = "red";
 const onInputColor = "yellowgreen";
 const offOutputColor = "black";
 const onOutputColor = "yellowgreen";
 
-function toggleInput(i) {
-  if (!isRunning) return;
-  setInput(i, !input[i]);
-}
 function setInput(i, val) {
   if (input[i] === val) return;
   input[i] = val;
@@ -41,13 +40,18 @@ function setOutput(i, val) {
   outp[i].style.backgroundColor = val ? onOutputColor : offOutputColor;
 }
 
+function toggleInput(i) {
+  if (!isRunning) return;
+  setInput(i, !input[i]);
+}
+
 function resetIO() {
   input.forEach((x, i) => setInput(i, false));
   output.forEach((x, i) => setOutput(i, false));
 }
+//#endregion
 
 //init
-
 var forceStop = true;
 var stan = 1;
 var loopDelay = 100;
@@ -73,7 +77,13 @@ function loop() {
     var L6 = output[5];
     var L7 = output[6];
 
-    eval(code.value);
+    try {
+      eval(code.value);
+    } catch (ex) {
+      showError(ex, "błąd wykonywnia programu");
+      stopProgram();
+      return;
+    }
 
     setOutput(0, L1);
     setOutput(1, L2);
@@ -87,6 +97,7 @@ function loop() {
   }, loopDelay);
 }
 
+inp.forEach((x, i) => x.addEventListener("click", () => toggleInput(i)));
 startBtn.addEventListener("click", () => startProgram());
 stopBtn.addEventListener("click", () => stopProgram());
 document.addEventListener("keypress", onKeyPress);
@@ -121,8 +132,32 @@ function startProgram() {
   stan = 1;
   resetIO();
 
-  eval(`var ${variables.value};`);
+  if (variables.value)
+    try {
+      let kurwa = variables.value.split(" ").join("");
+      let variablesInitCommand = `var ${kurwa};`.replace(";;", ";");
+      console.log(`setting variables: '${variablesInitCommand}'`);
+      window.eval(variablesInitCommand);
+    } catch (ex) {
+      showError(ex, "błąd w deklaracji zmiennych");
+    }
+  else {
+    console.log("no variables set");
+  }
+
   loop();
+}
+
+function showError(ex, source = "error") {
+  console.log(source, ex);
+
+  let xd = document.createElement("p");
+  xd.innerHTML = innerHTML = `${new Date().toLocaleTimeString()} - <b>${source}</b>:<br />${
+    ex.message
+  }<hr/>`;
+  setTimeout(() => xd.remove(), 10000);
+  // if (logger.firstChild) logger.firstChild.insertBefore(xd);
+  logger.appendChild(xd);
 }
 
 function onKeyPress(ev) {
