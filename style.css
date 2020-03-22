@@ -1,0 +1,69 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+h4 {
+  line-height: 65px;
+  margin-right: 30px;
+}
+
+.output {
+  display: block;
+}
+.output > div {
+  display: inline-flex;
+  width: 50px;
+  height: 50px;
+  margin: 10px;
+  background-color: gray;
+  color: white;
+  cursor: pointer;
+}
+
+.output > div > span {
+  margin: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.input > div {
+  color: white;
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  margin: 15px;
+  background-color: gray;
+  cursor: pointer;
+}
+
+.input > div > span {
+  margin: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.code {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#code,
+#variables {
+  width: 50%;
+  margin: 5px auto;
+  color: black;
+}
+
+#code {
+  resize: none;
+  flex: 1;
+}
+
+#variables {
+}
+
+.code-row {
+  flex: 1;
+}
