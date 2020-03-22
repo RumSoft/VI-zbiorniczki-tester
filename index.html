@@ -13,12 +13,15 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap4-solarized-theme@2.0.2/dist/css/solarized-light-theme.min.css">
     <link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
     <div class="container text-center app">
-        <h1>zbiorniczki</h1>
+        <h1>zbiorniczki tester ( ಠ ͜ʖಠ)</h1>
+        <h6>po uruchomieniu input można zmieniać klawiszami 1-7</h6>
         <div class="row m-auto">
             <h4>output</h4>
             <div class="output">
@@ -45,21 +48,22 @@
         </div>
         <div class="code">
             <div class="buttons">
-                <button id="start" class="btn btn-primary btn-lg">
+                <button id="start" class="btn btn-info btn-lg">
                     Start
                 </button>
                 <button id="stop" disabled class="btn btn-danger btn-lg">
                     Stop
                 </button>
-                <span>
-                    <input class="ml-3" style="width:200px" placeholder="kwant czasu w ms, def = 10" id="deltatime"
-                        value="100">
+                <span class="ml-5">cykl:
+                    <input class="ml-3" style="width:50px" placeholder="= 10" id="deltatime" value="50"> ms
                 </span>
-                <span>stan: <span id="stantextbox">asd</span></span>
+                <span class="ml-5">stan: <span id="stantextbox">-</span></span>
             </div>
 
-            <input id="variables" class="form-control" placeholder="zmienne np.: x1,x2,Z1,Z2,Z3,stan=1" />
-            <textarea class="text-left form-control" id="code" placeholder="wykonywany kod programu"></textarea>
+            <code
+                id="variables-container"><input id="variables" class="form-control" placeholder="zmienne np.: x1,x2,Z1,Z2,Z3,stan=1" /></code>
+            <code
+                id="code-container"><textarea class="text-left form-control" id="code" placeholder="wykonywany kod programu"></textarea></code>
         </div>
     </div>
     </div>

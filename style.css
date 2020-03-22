@@ -3,22 +3,33 @@
   flex-direction: column;
   min-height: 100vh;
 }
+h1,
+h6 {
+  margin: 5px;
+}
 h4 {
-  line-height: 65px;
+  line-height: 50px;
   margin-right: 30px;
+}
+
+.output > div,
+.input > div {
+  background-color: gray;
+  color: white;
+  cursor: pointer;
+  border: 1px solid #333;
+  border-radius: 5px;
+  display: inline-flex;
 }
 
 .output {
   display: block;
 }
+
 .output > div {
-  display: inline-flex;
   width: 50px;
   height: 50px;
   margin: 10px;
-  background-color: gray;
-  color: white;
-  cursor: pointer;
 }
 
 .output > div > span {
@@ -28,13 +39,9 @@ h4 {
 }
 
 .input > div {
-  color: white;
-  display: inline-flex;
   width: 40px;
   height: 40px;
   margin: 15px;
-  background-color: gray;
-  cursor: pointer;
 }
 
 .input > div > span {
@@ -49,19 +56,23 @@ h4 {
   flex: 1;
 }
 
-#code,
-#variables {
-  width: 50%;
-  margin: 5px auto;
-  color: black;
-}
-
+#variables,
 #code {
   resize: none;
+  height: 100%;
   flex: 1;
+  color: black;
+  font-size: 14px;
 }
 
-#variables {
+code {
+  width: 60%;
+  margin: 5px auto;
+  display: flex;
+  flex-direction: column;
+}
+#code-container {
+  flex: 1;
 }
 
 .code-row {

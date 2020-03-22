@@ -98,6 +98,7 @@ function stopProgram() {
   variables.disabled = false;
   stopBtn.blur();
   forceStop = true;
+  deltatime.disabled = false;
   isRunning = false;
 
   stan = 1;
@@ -112,6 +113,7 @@ function startProgram() {
   isRunning = true;
   code.disabled = true;
   variables.disabled = true;
+  deltatime.disabled = true;
 
   loopDelay = Math.max(1, Math.min(deltatime.value || 10, 500));
   console.log(`starting program with ${loopDelay}ms loop delay`);
