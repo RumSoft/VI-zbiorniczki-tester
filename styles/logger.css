@@ -1,0 +1,23 @@
+.logger {}
+
+.log {
+    color: #555;
+    border-top: 1px solid black;
+    font-size: 12px;
+
+    opacity: 1;
+    transition: opacity 5s ease;
+}
+
+.log--hiding {
+    opacity: 0;
+    transition: opacity 5s ease;
+}
+
+.log--error .log__title {
+    color: red;
+}
+
+.log--info {
+    color: #5533aa;
+}

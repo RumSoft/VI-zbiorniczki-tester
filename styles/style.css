@@ -1,0 +1,132 @@
+@import "logger.css";
+
+.input-group {
+  display: flex;
+}
+
+body,
+.app {
+  overflow: hidden;
+  height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+}
+
+
+.output>div,
+.input>div {
+  background-color: gray;
+  color: white;
+  cursor: pointer;
+  border: 1px solid #333;
+  border-radius: 5px;
+  display: inline-flex;
+}
+
+.output {
+  display: block;
+}
+
+.output>div {
+  width: 50px;
+  height: 50px;
+  margin: 10px;
+}
+
+.input>div>span,
+.output>div>span {
+  margin: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+.input>div {
+  width: 40px;
+  height: 40px;
+  margin: 15px;
+}
+
+#variables,
+#code {
+  resize: none;
+  height: 100%;
+  flex: 1;
+  color: black;
+  font-size: 14px;
+}
+
+code {
+  width: 100%;
+  margin: 5px auto;
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  color: black;
+}
+
+.code {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+}
+
+
+#code-container {
+  flex: 1;
+}
+
+@media screen and (max-width: 1200px) {
+
+  .output>div {
+    margin: 5px 2px;
+  }
+
+  .input>div {
+    margin: 5px 2px;
+  }
+
+  p {
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 991px) {
+
+  .output>div {
+    margin: 5px;
+  }
+
+  .input>div {
+    margin: 5px 10px;
+  }
+
+  p {
+    font-size: 12px;
+  }
+
+  body,
+  .app {
+    overflow: unset;
+    height: unset;
+    min-height: 50vh;
+  }
+
+  #logger {
+    display: none !important;
+  }
+
+  #code {
+    resize: vertical;
+    min-height: 300px;
+  }
+
+  #code-container {
+    display: block;
+  }
+}

@@ -1,3 +1,6 @@
+import programStorage from "./storage.js";
+import logger from "./logger.js";
+
 //#region variables
 var inp = new Array(7)
   .fill("input")
@@ -18,37 +21,42 @@ var variables = document.getElementById("variables");
 var code = document.getElementById("code");
 var deltatime = document.getElementById("deltatime");
 var stantextbox = document.getElementById("stantextbox");
-var logger = document.getElementById("logger");
 
 //#endregion
 
 //#region input functions
-const offInputColor = "red";
-const onInputColor = "yellowgreen";
-const offOutputColor = "black";
-const onOutputColor = "yellowgreen";
+const colors = {
+  input: {
+    on: "yellowgreen",
+    off: "red"
+  },
+  output: {
+    on: "yellowgreen",
+    off: "black"
+  }
+};
 
-function setInput(i, val) {
-  if (input[i] === val) return;
-  input[i] = val;
-  inp[i].style.backgroundColor = val ? onInputColor : offInputColor;
-}
+const io = {
+  setInput(i, val) {
+    if (input[i] === val) return;
+    input[i] = val;
+    inp[i].style.backgroundColor = val ? colors.input.on : colors.input.off;
+  },
+  setOutput(i, val) {
+    if (output[i] === val) return;
+    output[i] = val;
+    outp[i].style.backgroundColor = val ? colors.output.on : colors.output.off;
+  },
+  toggleInput(i) {
+    if (!isRunning) return;
+    this.setInput(i, !input[i]);
+  },
+  reset() {
+    input.forEach((x, i) => io.setInput(i, false));
+    output.forEach((x, i) => io.setOutput(i, false));
+  }
+};
 
-function setOutput(i, val) {
-  if (output[i] === val) return;
-  output[i] = val;
-  outp[i].style.backgroundColor = val ? onOutputColor : offOutputColor;
-}
-
-function toggleInput(i) {
-  if (!isRunning) return;
-  setInput(i, !input[i]);
-}
-
-function resetIO() {
-  input.forEach((x, i) => setInput(i, false));
-  output.forEach((x, i) => setOutput(i, false));
-}
 //#endregion
 
 //init
@@ -59,7 +67,7 @@ var isRunning = false;
 
 function loop() {
   if (forceStop) return;
-  stantextbox.innerHTML = `stan: ${stan}`;
+  stantextbox.innerText = stan;
 
   setTimeout(() => {
     var aK1 = input[0];
@@ -80,24 +88,24 @@ function loop() {
     try {
       eval(code.value);
     } catch (ex) {
-      showError(ex, "błąd wykonywnia programu");
+      logger.Error(ex, "błąd wykonywnia programu");
       stopProgram();
       return;
     }
 
-    setOutput(0, L1);
-    setOutput(1, L2);
-    setOutput(2, L3);
-    setOutput(3, L4);
-    setOutput(4, L5);
-    setOutput(5, L6);
-    setOutput(6, L7);
+    io.setOutput(0, L1);
+    io.setOutput(1, L2);
+    io.setOutput(2, L3);
+    io.setOutput(3, L4);
+    io.setOutput(4, L5);
+    io.setOutput(5, L6);
+    io.setOutput(6, L7);
 
     loop();
   }, loopDelay);
 }
 
-inp.forEach((x, i) => x.addEventListener("click", () => toggleInput(i)));
+inp.forEach((x, i) => x.addEventListener("click", () => io.toggleInput(i)));
 startBtn.addEventListener("click", () => startProgram());
 stopBtn.addEventListener("click", () => stopProgram());
 document.addEventListener("keypress", onKeyPress);
@@ -113,7 +121,7 @@ function stopProgram() {
   isRunning = false;
 
   stan = 1;
-  resetIO();
+  io.reset();
 }
 
 function startProgram() {
@@ -127,37 +135,25 @@ function startProgram() {
   deltatime.disabled = true;
 
   loopDelay = Math.max(1, Math.min(deltatime.value || 10, 500));
-  console.log(`starting program with ${loopDelay}ms loop delay`);
+  logger.Info(`starting program with ${loopDelay}ms loop delay`);
 
   stan = 1;
-  resetIO();
+  io.reset();
 
   if (variables.value)
     try {
       let kurwa = variables.value.split(" ").join("");
       let variablesInitCommand = `var ${kurwa};`.replace(";;", ";");
-      console.log(`setting variables: '${variablesInitCommand}'`);
+      logger.Info(`setting variables: '${variablesInitCommand}'`);
       window.eval(variablesInitCommand);
     } catch (ex) {
-      showError(ex, "błąd w deklaracji zmiennych");
+      logger.Error(ex, "błąd w deklaracji zmiennych");
     }
   else {
-    console.log("no variables set");
+    logger.Info("no variables set");
   }
 
   loop();
-}
-
-function showError(ex, source = "error") {
-  console.log(source, ex);
-
-  let xd = document.createElement("p");
-  xd.innerHTML = innerHTML = `${new Date().toLocaleTimeString()} - <b>${source}</b>:<br />${
-    ex.message
-  }<hr/>`;
-  setTimeout(() => xd.remove(), 10000);
-  // if (logger.firstChild) logger.firstChild.insertBefore(xd);
-  logger.appendChild(xd);
 }
 
 function onKeyPress(ev) {
@@ -166,6 +162,8 @@ function onKeyPress(ev) {
     return;
 
   if (ev.key >= "1" && ev.key <= "7") {
-    toggleInput(ev.key - 1);
+    io.toggleInput(ev.key - 1);
   }
 }
+
+programStorage.displayPrograms();
