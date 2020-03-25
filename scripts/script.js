@@ -134,7 +134,7 @@ function startProgram() {
   variables.disabled = true;
   deltatime.disabled = true;
 
-  loopDelay = Math.max(1, Math.min(deltatime.value || 10, 500));
+  loopDelay = Math.max(1, Math.min(deltatime.value || 100, 1000));
   logger.Info(`starting program with ${loopDelay}ms loop delay`);
 
   stan = 1;
