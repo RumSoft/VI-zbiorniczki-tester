@@ -88,7 +88,7 @@ function loop() {
     try {
       eval(code.value);
     } catch (ex) {
-      logger.Error(ex, "błąd wykonywnia programu");
+      logger.Error(ex, "błąd wykonywania programu");
       stopProgram();
       return;
     }
