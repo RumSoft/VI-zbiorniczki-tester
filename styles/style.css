@@ -1,4 +1,6 @@
 @import "logger.css";
+@import "io.css";
+@import "codeMirror.css";
 
 .input-group {
   display: flex;
@@ -6,48 +8,17 @@
 
 body,
 .app {
-  overflow: hidden;
-  height: 100vh;
+  min-height: 100vh;
+  background: #fcf5e4;
 }
 
 .app {
+  background: white;
   display: flex;
   flex-direction: column;
+  border: 1px solid #ced4da;
 }
 
-
-.output>div,
-.input>div {
-  background-color: gray;
-  color: white;
-  cursor: pointer;
-  border: 1px solid #333;
-  border-radius: 5px;
-  display: inline-flex;
-}
-
-.output {
-  display: block;
-}
-
-.output>div {
-  width: 50px;
-  height: 50px;
-  margin: 10px;
-}
-
-.input>div>span,
-.output>div>span {
-  margin: auto;
-  pointer-events: none;
-  user-select: none;
-}
-
-.input>div {
-  width: 40px;
-  height: 40px;
-  margin: 15px;
-}
 
 #variables,
 #code {

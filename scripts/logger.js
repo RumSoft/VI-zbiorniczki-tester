@@ -7,9 +7,8 @@ export default {
 
     let xd = document.createElement("p");
     xd.className = "log log--error";
-    xd.innerHTML = `<span class="log__title">${new Date().toLocaleTimeString()} - <strong>${source}</strong>:</span><br />${
-      ex.message
-    }`;
+    xd.innerHTML = `<span class="log__title">${new Date().toLocaleTimeString()} - <strong>${source}</strong>:</span><br />${ex?.message ??
+      ex}`;
 
     logger.prepend(xd);
 

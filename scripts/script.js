@@ -1,5 +1,6 @@
 import programStorage from "./storage.js";
 import logger from "./logger.js";
+import codeBox from "./codeMirror.js";
 
 //#region variables
 var inp = new Array(7)
@@ -18,10 +19,12 @@ var output = outp.map(x => null);
 var startBtn = document.getElementById("start");
 var stopBtn = document.getElementById("stop");
 var variables = document.getElementById("variables");
-var code = document.getElementById("code");
 var deltatime = document.getElementById("deltatime");
 var stantextbox = document.getElementById("stantextbox");
 
+var formatBtn = document
+  .getElementById("formatBtn")
+  .addEventListener("click", () => codeBox.format());
 //#endregion
 
 //#region input functions
@@ -86,7 +89,7 @@ function loop() {
     var L7 = output[6];
 
     try {
-      eval(code.value);
+      eval(codeBox.doc.getValue());
     } catch (ex) {
       logger.Error(ex, "błąd wykonywania programu");
       stopProgram();
@@ -119,6 +122,7 @@ function stopProgram() {
   forceStop = true;
   deltatime.disabled = false;
   isRunning = false;
+  codeBox.display.wrapper.style.pointerEvents = "unset";
 
   stan = 1;
   io.reset();
@@ -133,9 +137,10 @@ function startProgram() {
   code.disabled = true;
   variables.disabled = true;
   deltatime.disabled = true;
+  codeBox.display.wrapper.style.pointerEvents = "none";
 
   loopDelay = Math.max(1, Math.min(deltatime.value || 100, 1000));
-  logger.Info(`starting program with ${loopDelay}ms loop delay`);
+  logger.Info(`Uruchamianie programu z cyklem ${loopDelay}ms`);
 
   stan = 1;
   io.reset();
@@ -150,10 +155,10 @@ function startProgram() {
       logger.Info(`setting variables: '${variablesInitCommand}'`);
       window.eval(variablesInitCommand);
     } catch (ex) {
-      logger.Error(ex, "błąd w deklaracji zmiennych");
+      logger.Error(ex, "Błąd w deklaracji zmiennych");
     }
   else {
-    logger.Info("no variables set");
+    logger.Info("Nie zadeklarowano zmiennych");
   }
 
   loop();
@@ -170,3 +175,7 @@ function onKeyPress(ev) {
 }
 
 programStorage.displayPrograms();
+
+$(function() {
+  $('[data-toggle="tooltip"]').tooltip();
+});

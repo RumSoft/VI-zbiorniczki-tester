@@ -1,15 +1,13 @@
 import logger from "./logger.js";
+import codeBox from "./codeMirror.js";
 
 var template = document.getElementById("savedprogram-template");
 var programlistnode = document.getElementById("savedprograms");
-var saveNewProgramBtn = document.getElementById("saveNewProgramBtn");
-saveNewProgramBtn.addEventListener("click", () => {
-  saveNewProgram();
-});
-
 var variablesInput = document.getElementById("variables");
-var codeTextarea = document.getElementById("code");
-var newProgramNameInput = document.getElementById("newProgramNameInput");
+
+document
+  .getElementById("saveNewProgramBtn")
+  .addEventListener("click", () => saveNewProgram());
 
 const ls = {
   get() {
@@ -40,9 +38,9 @@ var programStorage = {
       var item = items[x];
       var node = template.cloneNode(true);
 
-      node.id = "prog" + item.name.replace("", "_");
+      node.id = "prog" + item.name.replace(" ", "_");
       node.hidden = false;
-      node.querySelector(".title").value = item.name;
+      node.querySelector(".name").value = item.name;
       node
         .querySelector(".load")
         .addEventListener("click", () => loadProgram(item.name));
@@ -59,36 +57,46 @@ var programStorage = {
 
 function saveNewProgram() {
   let item = {
-    code: codeTextarea.value,
+    code: codeBox.doc.getValue(),
     vars: variablesInput.value,
-    name: newProgramNameInput.value
+    name: prompt("Podaj nazwę dla tego programu", undefined)
   };
   if (!item.name) {
-    alert("ustaw nazwę!@%!@$!");
+    logger.Error("lub anulowano idk ¯\\_(ツ)_/¯", `Nie podano nazwy pliku`);
+    return;
+  }
+
+  if (ls.getByName(item.name)) {
+    logger.Error(
+      `Bo istnieje już program z nazwą ${item.name}`,
+      "Zapisano nowego programu"
+    );
     return;
   }
 
   ls.setOne(item);
   programStorage.displayPrograms();
 
-  logger.Info(`zapisano program '${item.name}'`);
+  logger.Info(`Zapisano program '${item.name}'`);
 }
 
 function resaveProgram(name) {
+  if (!confirm(`Czy na pewno chcesz nadpisać program ${name}?`)) return;
+
   let item = ls.getByName(name);
-  item.code = codeTextarea.value;
+  item.code = codeBox.doc.getValue();
   item.vars = variablesInput.value;
   ls.setOne(item);
 
-  logger.Info(`zapisano program '${name}'`);
+  logger.Info(`Zapisano program '${name}'`);
 }
 
 function loadProgram(name) {
   let item = ls.getByName(name);
-  codeTextarea.value = item.code;
+  codeBox.doc.setValue(item.code);
   variablesInput.value = item.vars;
 
-  logger.Info(`załadowano program '${name}'`);
+  logger.Info(`Wczytano program '${name}'`);
 }
 
 function deleteProgram(name) {
@@ -99,7 +107,7 @@ function deleteProgram(name) {
   ls.set(items);
   programStorage.displayPrograms();
 
-  logger.Info(`usunięto program '${name}'`);
+  logger.Info(`Usunięto program '${name}'`);
 }
 
 export default programStorage;
