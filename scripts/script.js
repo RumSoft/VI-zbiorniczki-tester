@@ -142,7 +142,10 @@ function startProgram() {
 
   if (variables.value)
     try {
-      let kurwa = variables.value.split(" ").join("");
+      let kurwa = variables.value
+        .replace(/^\s*(char\s+)/, "")
+        .split(" ")
+        .join("");
       let variablesInitCommand = `var ${kurwa};`.replace(";;", ";");
       logger.Info(`setting variables: '${variablesInitCommand}'`);
       window.eval(variablesInitCommand);
