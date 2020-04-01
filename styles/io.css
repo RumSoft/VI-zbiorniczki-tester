@@ -49,10 +49,14 @@
 }
 
 .io>.stan {
-    grid-area: 1 / 2 / 3 / 3;
+    grid-area: 1 / 2 / 2 / 3;
     padding-top: 10px;
 }
 
+.io>.tim {
+    grid-area: 2 / 2 / 3 / 3;
+    padding-top: 10px;
+}
 #stantextbox {
     font-size: 20px;
     font-weight: bold;

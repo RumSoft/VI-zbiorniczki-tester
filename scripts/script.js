@@ -21,6 +21,7 @@ var stopBtn = document.getElementById("stop");
 var variables = document.getElementById("variables");
 var deltatime = document.getElementById("deltatime");
 var stantextbox = document.getElementById("stantextbox");
+var timtextbox = document.getElementById("timtextbox");
 
 var formatBtn = document
   .getElementById("formatBtn")
@@ -67,10 +68,12 @@ var forceStop = true;
 var stan = 1;
 var loopDelay = 100;
 var isRunning = false;
+var tim = 0;
 
 function loop() {
   if (forceStop) return;
   stantextbox.innerText = stan;
+  timtextbox.innerText = ((tim * loopDelay) / 1000).toFixed(1);
 
   setTimeout(() => {
     var aK1 = input[0];
