@@ -6,15 +6,15 @@ import codeBox from "./codeMirror.js";
 var inp = new Array(7)
   .fill("input")
   .map((x, i) => `${x}${i + 1}`)
-  .map(x => document.getElementById(x));
+  .map((x) => document.getElementById(x));
 
 var outp = new Array(7)
   .fill("output")
   .map((x, i) => `${x}${i + 1}`)
-  .map(x => document.getElementById(x));
+  .map((x) => document.getElementById(x));
 
-var input = inp.map(x => null);
-var output = outp.map(x => null);
+var input = inp.map((x) => null);
+var output = outp.map((x) => null);
 
 var startBtn = document.getElementById("start");
 var stopBtn = document.getElementById("stop");
@@ -22,6 +22,9 @@ var variables = document.getElementById("variables");
 var deltatime = document.getElementById("deltatime");
 var stantextbox = document.getElementById("stantextbox");
 var timtextbox = document.getElementById("timtextbox");
+var timtextbox1 = document.getElementById("timtextbox1");
+var timtextbox2 = document.getElementById("timtextbox2");
+var timtextbox3 = document.getElementById("timtextbox3");
 
 var formatBtn = document
   .getElementById("formatBtn")
@@ -32,12 +35,12 @@ var formatBtn = document
 const colors = {
   input: {
     on: "yellowgreen",
-    off: "red"
+    off: "red",
   },
   output: {
     on: "yellowgreen",
-    off: "black"
-  }
+    off: "black",
+  },
 };
 
 const io = {
@@ -58,7 +61,7 @@ const io = {
   reset() {
     input.forEach((x, i) => io.setInput(i, false));
     output.forEach((x, i) => io.setOutput(i, false));
-  }
+  },
 };
 
 //#endregion
@@ -69,11 +72,17 @@ var stan = 1;
 var loopDelay = 100;
 var isRunning = false;
 var tim = 0;
+var tim1 = 0;
+var tim2 = 0;
+var tim3 = 0;
 
 function loop() {
   if (forceStop) return;
   stantextbox.innerText = stan;
   timtextbox.innerText = ((tim * loopDelay) / 1000).toFixed(1);
+  timtextbox1.innerText = ((tim1 * loopDelay) / 1000).toFixed(1);
+  timtextbox2.innerText = ((tim2 * loopDelay) / 1000).toFixed(1);
+  timtextbox3.innerText = ((tim3 * loopDelay) / 1000).toFixed(1);
 
   setTimeout(() => {
     var aK1 = input[0];
@@ -179,6 +188,6 @@ function onKeyPress(ev) {
 
 programStorage.displayPrograms();
 
-$(function() {
+$(function () {
   $('[data-toggle="tooltip"]').tooltip();
 });
