@@ -1,5 +1,6 @@
 import logger from "./logger.js";
 import codeBox from "./codeMirror.js";
+import eventEmitter from "./eventEmitter.js";
 
 var template = document.getElementById("savedprogram-template");
 var programlistnode = document.getElementById("savedprograms");
@@ -25,8 +26,10 @@ const ls = {
   setOne(val) {
     let items = this.get();
     this.set({ ...items, [val.name]: { ...val } });
-  }
+  },
 };
+
+var event = new eventEmitter();
 
 var programStorage = {
   displayPrograms() {
@@ -34,7 +37,7 @@ var programStorage = {
 
     let items = ls.get() || {};
     let keys = Object.keys(items);
-    keys.forEach(x => {
+    keys.forEach((x) => {
       var item = items[x];
       var node = template.cloneNode(true);
 
@@ -52,14 +55,15 @@ var programStorage = {
         .addEventListener("click", () => deleteProgram(item.name));
       programlistnode.appendChild(node);
     });
-  }
+  },
+  listener: event,
 };
 
 function saveNewProgram() {
   let item = {
     code: codeBox.doc.getValue(),
     vars: variablesInput.value,
-    name: prompt("Podaj nazwę dla tego programu", undefined)
+    name: prompt("Podaj nazwę dla tego programu", undefined),
   };
   if (!item.name) {
     logger.Error("lub anulowano idk ¯\\_(ツ)_/¯", `Nie podano nazwy pliku`);
@@ -97,6 +101,7 @@ function loadProgram(name) {
   variablesInput.value = item.vars;
 
   logger.Info(`Wczytano program '${name}'`);
+  event.emit("codeChanged");
 }
 
 function deleteProgram(name) {

@@ -36,6 +36,9 @@ var formatBtn = document
   .addEventListener("click", () => codeBox.format());
 //#endregion
 
+var monitoring = document.getElementById("monitoring");
+var monitoringData = [];
+
 //#region input functions
 const colors = {
   input: {
@@ -158,6 +161,14 @@ function loop() {
     io.setOutput(7, L8);
     io.setOutput(8, L9);
 
+    monitoringData.forEach((x, i) => {
+      x.value = window[x.key];
+      if (typeof x.value === "undefined") x.value = "-";
+      else if (x.value === 0 || x.value === false) x.value = "0  ❌";
+      else if (x.value === 1 || x.value === true) x.value = "1  ✔";
+      x.valueTd.innerHTML = x.value;
+    });
+
     loop();
   }, loopDelay);
 }
@@ -227,7 +238,41 @@ function onKeyPress(ev) {
   }
 }
 
+//data grid
+
+variables.addEventListener("input", (ev) => reloadMonitoring());
+programStorage.listener.on("codeChanged", () => reloadMonitoring());
+
+function reloadMonitoring() {
+  monitoringData = variables.value
+    .replace(/^\s*(char\s+)/, "")
+    .split(",")
+    .map((x) => x.replace(/=.*/, "").replace(/[^a-zA-Z0-9]/, ""))
+    .filter((x) => x)
+    .sort()
+    .map((x) => {
+      let keyTd = document.createElement("td");
+      keyTd.innerHTML = x;
+      return {
+        keyTd: keyTd,
+        valueTd: document.createElement("td"),
+        key: x,
+        value: "-",
+      };
+    });
+
+  monitoring.innerHTML = "";
+
+  monitoringData.forEach((x) => {
+    let tr = document.createElement("tr");
+    tr.appendChild(x.keyTd);
+    tr.appendChild(x.valueTd);
+    monitoring.appendChild(tr);
+  });
+}
+
 programStorage.displayPrograms();
+reloadMonitoring();
 
 $(function () {
   $('[data-toggle="tooltip"]').tooltip();
