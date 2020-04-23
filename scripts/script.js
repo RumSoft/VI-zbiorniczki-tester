@@ -253,7 +253,6 @@ function reloadMonitoring() {
       key: x,
       value: "-",
     }));
-  console.log(monitoringData);
   monitoring.clear();
   monitoringData.forEach((x) => {
     monitoring.addRow(x);
