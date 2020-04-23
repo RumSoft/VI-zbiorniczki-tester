@@ -163,6 +163,8 @@ function loop() {
 
     monitoringData.forEach((x, i) => {
       x.value = window[x.key];
+      if (x.value === 0 || x.value === false) x.value = "0  ❌";
+      if (x.value === 1 || x.value === true) x.value = "1  ✔";
       monitoring.updateRow(x.key, x);
     });
 
