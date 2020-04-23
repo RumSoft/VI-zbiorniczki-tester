@@ -113,3 +113,11 @@ input {
     display: block;
   }
 }
+
+tr[data-role="empty"] {
+  display: none;
+}
+
+#monitoring td {
+  padding: 0.1rem 1rem !important;
+}

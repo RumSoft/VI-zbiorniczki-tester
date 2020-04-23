@@ -36,6 +36,9 @@ var formatBtn = document
   .addEventListener("click", () => codeBox.format());
 //#endregion
 
+var monitoring;
+var monitoringData = [];
+
 //#region input functions
 const colors = {
   input: {
@@ -158,6 +161,11 @@ function loop() {
     io.setOutput(7, L8);
     io.setOutput(8, L9);
 
+    monitoringData.forEach((x, i) => {
+      x.value = window[x.key];
+      monitoring.updateRow(x.key, x);
+    });
+
     loop();
   }, loopDelay);
 }
@@ -227,7 +235,40 @@ function onKeyPress(ev) {
   }
 }
 
+//data grid
+
+variables.addEventListener("input", (ev) => reloadMonitoring());
+programStorage.listener.on("codeChanged", () => reloadMonitoring());
+
+function reloadMonitoring() {
+  monitoringData = variables.value
+    .replace(/^\s*(char\s+)/, "")
+    .split(",")
+    .map((x) => x.replace(/=.*/, "").replace(/[^a-zA-Z0-9]/, ""))
+    .filter((x) => x)
+    .sort()
+    .map((x) => ({
+      key: x,
+      value: "-",
+    }));
+  console.log(monitoringData);
+  monitoring.clear();
+  monitoringData.forEach((x) => {
+    monitoring.addRow(x);
+  });
+}
+
+monitoring = $("#monitoring").grid({
+  uiLibrary: "bootstrap4",
+  primaryKey: "key",
+  columns: [
+    { field: "key", title: "Nazwa" },
+    { field: "value", title: "Wartość" },
+  ],
+});
+
 programStorage.displayPrograms();
+reloadMonitoring();
 
 $(function () {
   $('[data-toggle="tooltip"]').tooltip();
