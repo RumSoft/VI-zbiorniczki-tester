@@ -36,7 +36,7 @@ var formatBtn = document
   .addEventListener("click", () => codeBox.format());
 //#endregion
 
-var monitoring;
+var monitoring = document.getElementById("monitoring");
 var monitoringData = [];
 
 //#region input functions
@@ -163,9 +163,10 @@ function loop() {
 
     monitoringData.forEach((x, i) => {
       x.value = window[x.key];
-      if (x.value === 0 || x.value === false) x.value = "0  ❌";
-      if (x.value === 1 || x.value === true) x.value = "1  ✔";
-      monitoring.updateRow(x.key, x);
+      if (typeof x.value === "undefined") x.value = "-";
+      else if (x.value === 0 || x.value === false) x.value = "0  ❌";
+      else if (x.value === 1 || x.value === true) x.value = "1  ✔";
+      x.valueTd.innerHTML = x.value;
     });
 
     loop();
@@ -249,24 +250,26 @@ function reloadMonitoring() {
     .map((x) => x.replace(/=.*/, "").replace(/[^a-zA-Z0-9]/, ""))
     .filter((x) => x)
     .sort()
-    .map((x) => ({
-      key: x,
-      value: "-",
-    }));
-  monitoring.clear();
+    .map((x) => {
+      let keyTd = document.createElement("td");
+      keyTd.innerHTML = x;
+      return {
+        keyTd: keyTd,
+        valueTd: document.createElement("td"),
+        key: x,
+        value: "-",
+      };
+    });
+
+  monitoring.innerHTML = "";
+
   monitoringData.forEach((x) => {
-    monitoring.addRow(x);
+    let tr = document.createElement("tr");
+    tr.appendChild(x.keyTd);
+    tr.appendChild(x.valueTd);
+    monitoring.appendChild(tr);
   });
 }
-
-monitoring = $("#monitoring").grid({
-  uiLibrary: "bootstrap4",
-  primaryKey: "key",
-  columns: [
-    { field: "key", title: "Nazwa" },
-    { field: "value", title: "Wartość" },
-  ],
-});
 
 programStorage.displayPrograms();
 reloadMonitoring();
