@@ -79,7 +79,11 @@ var forceStop = true;
 var loopDelay = 100;
 var isRunning = false;
 
-function oczko(v) {
+function oczkoo() {
+  oczko((+new Date() / 100000) % 100);
+}
+
+function oczko(v = (+new Date() / 1000) % 1000) {
   oczkodiv.style.opacity = Math.abs(v);
   oczkodiv.style.filter = "";
 
