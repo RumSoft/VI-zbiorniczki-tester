@@ -57,6 +57,7 @@
                 <img src="assets/favicon-32x32.png" />
                 Zbiorniczki Tester ( ಠ ͜ʖಠ)
             </h2>
+            <h7><small>zaktualizowane do wykładu Układy mikroprogramowalne, cz.I</small></h7>
             <div class="card p-2 mt-3">
                 <h5>panel monitorowania</h5>
                 <table class="table" id="monitoring">
@@ -146,12 +147,30 @@
                 </div>
 
                 <code id="variables-container">
-                    <textarea id="variables" rows="4" class="form-control" placeholder="char x1, x2, Z1, Z2, Z3, sT3, sT5, tim, xw;
-char tab_PS1[]={ 6, 4, 4, 2, 2, 1, 1, 1, 1, 6, 4, 1, 4, 4 }; // PS1"></textarea>
+                    <textarea id="variables" rows="4" class="form-control" placeholder="char KL, LD, sT3, tim, xw;
+char tab_PS[] ={ 0, 3, 2, 2, 0, 0 }; // zawartosc PS (dziesietnie)
+char tab_PW[] ={ 2, 1, 2, 4, 3, 0 }; // zawartosc PW
+char tab_PA[] ={ 0, 0, 0, 2, 4, 0 }; // zawartosc PA
+int pc=0; // licznik mikrorozkazów (adres w ROM)"></textarea>
 
                 </code>
                 <code id="code-container" class="text-left">
-                    <textarea class="text-left form-control" id="code" placeholder="kod programu"></textarea>
+                    <textarea class="text-left form-control" id="code" placeholder="
+KL=aK1; // czytanie wejsc z klawiszy
+LD =(tab_PS[pc]&2)?1:0; // sterowanie na podstawie tab_PS[]
+sT3=(tab_PS[pc]&1)?1:0; // według odpowiednich bitów
+switch(tab_PW[pc]) {
+case 0: xw=0; break; // warunek według zakodowanej PW[]
+case 1: xw=1; break; // wpisz do zmiennej pomocniczej xw
+case 2: xw=KL; break; // na podstawie tabeli 'warunek-kod'
+case 3: xw=!KL; break;
+case 4: xw=!tim; break;
+}
+if (xw) ++pc; // jesli xw==1, to nastepny rozkaz
+else pc=tab_PA[pc]; // jesli xw==0, to skok według tab_PA[]
+if(sT3) tim=30; // jesli start timera, to wpisz 3 sekundy
+if(tim) --tim; // dekrementacja czasu
+L1=LD; // ustaw wyjscia"></textarea>
                 </code>
             </div>
         </div>

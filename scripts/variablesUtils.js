@@ -24,23 +24,20 @@ const removeComments = (str) =>
     .map((x) => x.split("//")[0].split("/*")[0])
     .join("\n");
 
-const deleteValues = (str) => {
-  console.warn(str);
-  let xd = str
+const deleteValues = (str) =>
+  str
     .replace(/(\[.*\])/g, "")
     .split(/[,;]/)
     .map((x) => x.split("=")[0])
     .join(",");
-  console.warn(xd);
-  return xd;
-};
+
 export default {
   prepareVariables: (str) =>
     [str, removeComments, replaceTypes, replaceArrays].reduce((acc, curr) =>
       curr(acc)
     ),
-  extractVariables: (str) => {
-    var xd = [
+  extractVariables: (str) =>
+    [
       str,
       removeComments,
       replaceArrays,
@@ -50,8 +47,5 @@ export default {
     ]
       .reduce((acc, curr) => curr(acc))
       .split(/[,;]/)
-      .filter((x) => x);
-    console.log(xd);
-    return xd;
-  },
+      .filter((x) => x),
 };
