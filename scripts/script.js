@@ -1,6 +1,7 @@
 import programStorage from "./storage.js";
 import logger from "./logger.js";
 import codeBox from "./codeMirror.js";
+import variablesUtils from "./variablesUtils.js";
 
 //#region variables
 var inp = new Array(8)
@@ -197,6 +198,7 @@ function stopProgram() {
 }
 
 function startProgram() {
+  console.clear();
   oczko(0);
   startBtn.disabled = true;
   stopBtn.disabled = false;
@@ -215,12 +217,11 @@ function startProgram() {
 
   if (variables.value)
     try {
-      let kurwa = variables.value
-        .replace(/^\s*(char\s+)/, "")
-        .split(" ")
-        .join("");
-      let variablesInitCommand = `var ${kurwa};`.replace(";;", ";");
-      logger.Info(`setting variables: '${variablesInitCommand}'`);
+      const variablesInitCommand = variablesUtils.prepareVariables(
+        variables.value
+      );
+      console.log(variablesInitCommand);
+      logger.Info(`Ustawianie zmiennych: '${variablesInitCommand}'`);
       window.eval(variablesInitCommand);
     } catch (ex) {
       logger.Error(ex, "Błąd w deklaracji zmiennych");
@@ -248,22 +249,16 @@ variables.addEventListener("input", (ev) => reloadMonitoring());
 programStorage.listener.on("codeChanged", () => reloadMonitoring());
 
 function reloadMonitoring() {
-  monitoringData = variables.value
-    .replace(/^\s*(char\s+)/, "")
-    .split(",")
-    .map((x) => x.replace(/=.*/, "").replace(/[^a-zA-Z0-9]/, ""))
-    .filter((x) => x)
-    .sort()
-    .map((x) => {
-      let keyTd = document.createElement("td");
-      keyTd.innerHTML = x;
-      return {
-        keyTd: keyTd,
-        valueTd: document.createElement("td"),
-        key: x,
-        value: "-",
-      };
-    });
+  monitoringData = variablesUtils.extractVariables(variables.value).map((x) => {
+    let keyTd = document.createElement("td");
+    keyTd.innerHTML = x;
+    return {
+      keyTd: keyTd,
+      valueTd: document.createElement("td"),
+      key: x,
+      value: "-",
+    };
+  });
 
   monitoring.innerHTML = "";
 
