@@ -175,7 +175,6 @@ function loop() {
       if (/.*\[.*\]/.test(x.key)) {
         let tab = x.key.split("[")[0];
         let index = x.key.split("[")[1].split("]")[0];
-        console.log(tab, index);
         if (
           typeof window[tab] !== "undefined" &&
           typeof window[index] !== "undefined"
@@ -231,7 +230,6 @@ function startProgram() {
       const variablesInitCommand = variablesUtils.prepareVariables(
         variables.value
       );
-      console.log(variablesInitCommand);
       logger.Info(`Ustawianie zmiennych: '${variablesInitCommand}'`);
       window.eval(variablesInitCommand);
     } catch (ex) {
