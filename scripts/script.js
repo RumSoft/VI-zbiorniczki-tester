@@ -171,6 +171,17 @@ function loop() {
       if (typeof x.value === "undefined") x.value = "-";
       else if (x.value === 0 || x.value === false) x.value = "0  ❌";
       else if (x.value === 1 || x.value === true) x.value = "1  ✔";
+
+      if (/.*\[.*\]/.test(x.key)) {
+        let tab = x.key.split("[")[0];
+        let index = x.key.split("[")[1].split("]")[0];
+        console.log(tab, index);
+        if (
+          typeof window[tab] !== "undefined" &&
+          typeof window[index] !== "undefined"
+        )
+          x.value = window[tab][window[index]];
+      }
       x.valueTd.innerHTML = x.value;
     });
 
@@ -230,6 +241,8 @@ function startProgram() {
     logger.Info("Nie zadeklarowano zmiennych");
   }
 
+  reloadMonitoring();
+
   loop();
 }
 
@@ -249,16 +262,27 @@ variables.addEventListener("input", (ev) => reloadMonitoring());
 programStorage.listener.on("codeChanged", () => reloadMonitoring());
 
 function reloadMonitoring() {
-  monitoringData = variablesUtils.extractVariables(variables.value).map((x) => {
-    let keyTd = document.createElement("td");
-    keyTd.innerHTML = x;
-    return {
-      keyTd: keyTd,
-      valueTd: document.createElement("td"),
-      key: x,
-      value: "-",
-    };
-  });
+  let vars = variablesUtils.extractVariables(variables.value);
+  monitoringData = [
+    ...vars,
+    vars.indexOf("pc") >= 0 && vars.indexOf("tab_PW") >= 0 && "tab_PW[pc]",
+    vars.indexOf("pc") >= 0 && vars.indexOf("tab_PA") >= 0 && "tab_PA[pc]",
+    vars.indexOf("pc") >= 0 && vars.indexOf("tab_PS") >= 0 && "tab_PS[pc]",
+    vars.indexOf("pc") >= 0 && vars.indexOf("tab_PS1") >= 0 && "tab_PS1[pc]",
+    vars.indexOf("pc") >= 0 && vars.indexOf("tab_PS2") >= 0 && "tab_PS2[pc]",
+    vars.indexOf("pc") >= 0 && vars.indexOf("tab_PS3") >= 0 && "tab_PS3[pc]",
+  ]
+    .filter((x) => x)
+    .map((x) => {
+      let keyTd = document.createElement("td");
+      keyTd.innerHTML = x;
+      return {
+        keyTd: keyTd,
+        valueTd: document.createElement("td"),
+        key: x,
+        value: "-",
+      };
+    });
 
   monitoring.innerHTML = "";
 
