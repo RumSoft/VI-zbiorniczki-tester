@@ -298,3 +298,5 @@ reloadMonitoring();
 $(function () {
   $('[data-toggle="tooltip"]').tooltip();
 });
+
+autosize(document.getElementById("variables"));

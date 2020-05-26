@@ -48,6 +48,14 @@ code {
   flex-direction: column;
 }
 
+#variables-container {
+  display: unset;
+}
+
+#variables {
+  resize: vertical;
+}
+
 input {
   color: black;
 }
