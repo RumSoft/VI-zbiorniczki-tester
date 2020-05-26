@@ -53,7 +53,7 @@ code {
 }
 
 #variables {
-  resize: vertical;
+  resize: vertical !important;
 }
 
 input {
