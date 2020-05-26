@@ -29,6 +29,10 @@ var timtextbox = document.getElementById("timtextbox");
 var timtextbox1 = document.getElementById("timtextbox1");
 var timtextbox2 = document.getElementById("timtextbox2");
 var timtextbox3 = document.getElementById("timtextbox3");
+var pctextbox = document.getElementById("pctextbox");
+var pctextbox1 = document.getElementById("pctextbox1");
+var pctextbox2 = document.getElementById("pctextbox2");
+var pctextbox3 = document.getElementById("pctextbox3");
 
 var oczkodiv = document.getElementById("oczko");
 
@@ -127,6 +131,10 @@ function loop() {
     timtextbox2.innerText = ((tim2 * loopDelay) / 1000).toFixed(1);
   if (typeof tim3 !== "undefined")
     timtextbox3.innerText = ((tim3 * loopDelay) / 1000).toFixed(1);
+  if (typeof pc !== "undefined") pctextbox.innerText = pc;
+  if (typeof pc1 !== "undefined") pctextbox1.innerText = pc1;
+  if (typeof pc2 !== "undefined") pctextbox2.innerText = pc2;
+  if (typeof pc3 !== "undefined") pctextbox3.innerText = pc3;
 
   setTimeout(() => {
     var aK1 = input[0];

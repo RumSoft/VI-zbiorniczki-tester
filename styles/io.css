@@ -68,11 +68,9 @@
     margin: auto;
 }
 
-.stan,
-.stan1,
-.stan2,
-.stan3 {
-    font-size: 15px !important;
+
+.stans h4 {
+    font-size: 14px;
 }
 
 .stans span {
