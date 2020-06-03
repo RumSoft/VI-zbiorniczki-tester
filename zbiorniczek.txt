@@ -5,6 +5,12 @@
 #include <windows.h>
 #include <conio.h>
 
+////////////////////////////////////////////
+// 156324@stud.prz.edu.pl
+// zapraszam do 120 linijki
+// tester zbiorniczka na szybko, "u mnie działa", polecam VS2019
+// enterem wysylamy tekst do zbiornika, wpisanie _ czysci output
+
 using namespace std;
 
 #pragma region useless
@@ -23,7 +29,7 @@ string cursortext; //
 int cursorpos = 0;
 char L1, L2, L3, L4, L5, L6, L7;
 auto hconsole = GetStdHandle(STD_OUTPUT_HANDLE);
-vector<string> sentToPc;
+vector<string> _sentToPc;
 
 void gotoxy(short x, short y)
 {
@@ -36,14 +42,20 @@ vector<char> _v; // bufor com
 //to pc
 void COM_send(char c)
 {
-	sentToPc[sentToPc.size() - 1] += c;
+	_sentToPc[_sentToPc.size() - 1] += c;
 	if (c == '#')
-		sentToPc.push_back("");
+		_sentToPc.push_back("");
 }
 
 //to zbiorniczek
 void COM_sendToZbiorniczek(char c)
 {
+	if(c == '_')
+	{
+		_sentToPc.clear();
+		_sentToPc.push_back("");
+		return;
+	}
 	_v.push_back(c);
 }
 
@@ -89,10 +101,10 @@ void draw()
 
 	gotoxy(30, 0);
 	cout << "ze zbiorniczka:" << endl;
-	for (int i = 0; i < sentToPc.size(); i++)
+	for (int i = 0; i < _sentToPc.size(); i++)
 	{
 		gotoxy(30, i + 1);
-		cout << sentToPc[i] << endl;
+		cout << _sentToPc[i] << endl;
 	}
 
 	gotoxy(0, 20);
@@ -106,11 +118,11 @@ END
 
 #pragma endregion
 
-///////////////////////////////////////////-
+////////////////////////////////////////////
 //
 // ZBYORNYCZKY EMERGENCY DUPATESTER
 // 
-// przed mainem: -------------------------
+// przed mainem: ---------------------------
 char x1, x2, Z1, Z2, Z3, stan = 1, tim; // definicje zmiennych dla sterowania
 char znak, stank = 1, a, b, c, cs; // definicje zmiennych dla komunikacji
 char T1 = 30, T2 = 20, T3 = 50; // definicje i inicjowanie czasów T1, T2, T3
@@ -297,7 +309,7 @@ int main()
 		return 69;
 	}
 
-	sentToPc.emplace_back("");
+	_sentToPc.emplace_back("");
 	while (true)
 	{
 		char c = _getche();
