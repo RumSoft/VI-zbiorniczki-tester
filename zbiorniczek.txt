@@ -5,30 +5,21 @@
 #include <windows.h>
 #include <conio.h>
 
-/////////////
-// 156324@stud.prz.edu.pl
-// od ~100 linijki piszemy wlasciwy program, #pragma region omijamy xd
-// "u mnie działa" - visual studio 2019
-
 using namespace std;
 
 #pragma region useless
 //dwa thready program i konsola
-#define PROGRAM_START(th, sleep) \
-    thread th                    \
-    {                            \
-        [=]() { while (true) { Sleep(sleep);
-#define PROGRAM_END \
-    }               \
-    }               \
-    }               \
-    ;
-#define XD PROGRAM_START(th2, 20)
-#define XDD PROGRAM_END
+#define THREAD_START(th, sleep) thread th{ [=]() { while (true) { Sleep(sleep);
+#define END } } };
+#define XD THREAD_START(th_draw, 20)
+#define PETLA_WHILE THREAD_START(th_while, 100)
+#define INIT thread init_thread{ [=]() {
+#define END_INIT } };
+
 //prosze tu nie patrzec
-//nic tu nie ma ciekawego, syf i balagan xddd,
-//ewentualnie funkcja draw() na dopisanie zmiennych
-string cursortext; //
+//nic tu nie ma ciekawego
+//syf i balagan xddd
+string cursortext; // 
 int cursorpos = 0;
 char L1, L2, L3, L4, L5, L6, L7;
 auto hconsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -36,8 +27,8 @@ vector<string> sentToPc;
 
 void gotoxy(short x, short y)
 {
-    COORD coord = {x, y};
-    SetConsoleCursorPosition(hconsole, coord);
+	COORD coord = {x, y};
+	SetConsoleCursorPosition(hconsole, coord);
 }
 
 vector<char> _v; // bufor com
@@ -45,286 +36,288 @@ vector<char> _v; // bufor com
 //to pc
 void COM_send(char c)
 {
-    sentToPc[sentToPc.size() - 1] += c;
-    if (c == '#')
-        sentToPc.push_back("");
+	sentToPc[sentToPc.size() - 1] += c;
+	if (c == '#')
+		sentToPc.push_back("");
 }
 
 //to zbiorniczek
 void COM_sendToZbiorniczek(char c)
 {
-    _v.push_back(c);
+	_v.push_back(c);
 }
 
 void COM_sendToZbiorniczek(string s)
 {
-    for (char c : s)
-        COM_sendToZbiorniczek(c);
+	for (char c : s)
+		COM_sendToZbiorniczek(c);
 }
+
+bool rozjeb = true;
+
+void UART_init(int baud)
+{
+	if (baud > 0)
+		rozjeb = false;
+}
+
 
 char COM_recv()
 {
-    if (_v.empty())
-        return 0;
-    const auto xd = _v[0];
-    _v.erase(_v.begin());
-    return xd;
+	if (_v.empty())
+		return 0;
+	const auto xd = _v[0];
+	_v.erase(_v.begin());
+	return xd;
 }
 
 void draw()
 {
-    system("CLS");
-    gotoxy(0, 2);
-    cout << "L1 = " << static_cast<int>(L1) << endl;
-    cout << "L2 = " << static_cast<int>(L2) << endl;
-    cout << "L3 = " << static_cast<int>(L3) << endl;
-    cout << "L4 = " << static_cast<int>(L4) << endl;
-    cout << "L5 = " << static_cast<int>(L5) << endl;
-    cout << "L6 = " << static_cast<int>(L6) << endl;
-    cout << "L7 = " << static_cast<int>(L7) << endl;
+	system("CLS");
+	gotoxy(0, 2);
+	cout << "L1 = " << static_cast<int>(L1) << endl;
+	cout << "L2 = " << static_cast<int>(L2) << endl;
+	cout << "L3 = " << static_cast<int>(L3) << endl;
+	cout << "L4 = " << static_cast<int>(L4) << endl;
+	cout << "L5 = " << static_cast<int>(L5) << endl;
+	cout << "L6 = " << static_cast<int>(L6) << endl;
+	cout << "L7 = " << static_cast<int>(L7) << endl;
 
-    gotoxy(10, 0);
-    for (int i = 0; i < _v.size(); i++)
-        cout << _v[i];
+	gotoxy(10, 0);
+	for (int i = 0; i < _v.size(); i++)
+		cout << _v[i];
 
-    gotoxy(30, 0);
-    cout << "ze zbiorniczka:" << endl;
-    for (int i = 0; i < sentToPc.size(); i++)
-    {
-        gotoxy(30, i + 1);
-        cout << sentToPc[i] << endl;
-    }
+	gotoxy(30, 0);
+	cout << "ze zbiorniczka:" << endl;
+	for (int i = 0; i < sentToPc.size(); i++)
+	{
+		gotoxy(30, i + 1);
+		cout << sentToPc[i] << endl;
+	}
 
-    gotoxy(0, 20);
-    cout << cursortext;
+	gotoxy(0, 20);
+	cout << cursortext;
 }
 
-XD draw();
-XDD
+XD
+			draw();
+END
+
 
 #pragma endregion
 
-    ////////////////////////////////////////////
-    //
-    // ZBYORNYCZKY EMERGENCY DUPATESTER
-    //
-
-    char x1,
-    x2, Z1, Z2, Z3, stan = 1, tim; // definicje zmiennych dla sterowania
+///////////////////////////////////////////-
+//
+// ZBYORNYCZKY EMERGENCY DUPATESTER
+// 
+// przed mainem: -------------------------
+char x1, x2, Z1, Z2, Z3, stan = 1, tim; // definicje zmiennych dla sterowania
 char znak, stank = 1, a, b, c, cs; // definicje zmiennych dla komunikacji
-char T1 = 30, T2 = 20, T3 = 50;    // definicje i inicjowanie czasów T1, T2, T3
+char T1 = 30, T2 = 20, T3 = 50; // definicje i inicjowanie czasów T1, T2, T3
 
-// ----------------------------------------
+// w mainie przed petla --------------------
+INIT
+		UART_init(9600);
+END_INIT
 
-PROGRAM_START(th, 100)
+// w mainie w petli ------------------------
+PETLA_WHILE
+			znak = COM_recv(); // odczyt odebranego znaku --------- (komunikacja)
+			if (znak != 0) // -------- jesli przyszedł nowy znak (!!!)
+				switch (stank)
+				{
+					// -------- to uruchom graf komunikacyjny --------
+				case 1: if (znak == ':') stank = 2;
+					break;
+				case 2: if (znak >= '0' && znak <= '9')
+					{
+						a = znak - '0';
+						stank = 3;
+					}
+					else stank = 1; // bład - krótka strzałka na grafie
+					break;
+				case 3: if (znak >= '0' && znak <= '6')
+					{
+						b = znak - '0';
+						stank = 4;
+					}
+					else if (znak == '#')
+						// odebrano znak '#'
+					{
+						if (a == 0)
+						{
+							COM_send(':');
+							COM_send(Z1 + '0'); // wyslij komunikat 1
+							COM_send(Z2 + '0');
+							COM_send(Z3 + '0');
+							cs = (Z1 + Z2 + Z3) % 2;
+							COM_send(cs + '0');
+							COM_send('#');
+						}
+						else if (a == 1)
+						{
+							COM_send(':');
+							COM_send(T1 / 10 + '0'); // wyslij komunikat 2
+							COM_send(T2 / 10 + '0');
+							COM_send(T3 / 10 + '0');
+							cs = (5 - (T1 / 10 + T2 / 10 + T3 / 10) % 5) % 5;
+							COM_send(cs + '0');
+							COM_send('#');
+						}
+						stank = 1;
+					} // i stank na 1
+					else
+						stank = 1; // bład - krótka strzałka na grafie
+					break;
+				case 4: if (znak >= '0' && znak <= '4')
+					{
+						c = znak - '0';
+						stank = 5;
+					}
+					else if (znak == '#') // odebrano znak '#'
+					{
+						if (a >= 3 && (a + b == 9)) T3 = a * 10; // ustaw T3
+						stank = 1;
+					} // i stank na 1
+					else stank = 1; // bład - krótka strzałka na grafie
+					break;
+				case 5: if (znak == '0') stank = 6;
+					else if (znak == '#') // odebrano znak '#'
+					{
+						if (a < 2 && b < 2 && c < 2 && ((a + b + c) % 2 == 0))
+						{
+							x1 = a;
+							x2 = b;
+						} // ustaw x1, x2
+						stank = 1;
+					} // i stank na 1
+					else stank = 1; // bład - krótka strzałka na grafie
+					break;
+				case 6: if (znak == '#') // odebrano znak '#'
+					{
+						if (a > 0 && a < 6 && b > 0 && ((a + b + c) % 5 == 0))
+						{
+							T1 = a * 10;
+							T2 = b * 10;
+						} // ustaw T1, T2
+						stank = 1;
+					} // i stank na 1
+					else stank = 1; // bład - krótka strzałka na grafie
+					break;
+				}
 
-znak = COM_recv(); // odczyt odebranego znaku --------- (komunikacja)
-if (znak != 0)     // -------- jesli przyszedł nowy znak (!!!)
-    switch (stank)
-    {
-        // -------- to uruchom graf komunikacyjny --------
-    case 1:
-        if (znak == ':')
-            stank = 2;
-        break;
-    case 2:
-        if (znak >= '0' && znak <= '9')
-        {
-            a = znak - '0';
-            stank = 3;
-        }
-        else
-            stank = 1; // bład - krótka strzałka na grafie
-        break;
-    case 3:
-        if (znak >= '0' && znak <= '6')
-        {
-            b = znak - '0';
-            stank = 4;
-        }
-        else if (znak == '#')
-        // odebrano znak '#'
-        {
-            if (a == 0)
-            {
-                COM_send(':');
-                COM_send(Z1 + '0'); // wyslij komunikat 1
-                COM_send(Z2 + '0');
-                COM_send(Z3 + '0');
-                cs = (Z1 + Z2 + Z3) % 2;
-                COM_send(cs + '0');
-                COM_send('#');
-            }
-            else if (a == 1)
-            {
-                COM_send(':');
-                COM_send(T1 / 10 + '0'); // wyslij komunikat 2
-                COM_send(T2 / 10 + '0');
-                COM_send(T3 / 10 + '0');
-                cs = (5 - (T1 / 10 + T2 / 10 + T3 / 10) % 5) % 5;
-                COM_send(cs + '0');
-                COM_send('#');
-            }
-            stank = 1;
-        } // i stank na 1
-        else
-            stank = 1; // bład - krótka strzałka na grafie
-        break;
-    case 4:
-        if (znak >= '0' && znak <= '4')
-        {
-            c = znak - '0';
-            stank = 5;
-        }
-        else if (znak == '#') // odebrano znak '#'
-        {
-            if (a >= 3 && (a + b == 9))
-                T3 = a * 10; // ustaw T3
-            stank = 1;
-        } // i stank na 1
-        else
-            stank = 1; // bład - krótka strzałka na grafie
-        break;
-    case 5:
-        if (znak == '0')
-            stank = 6;
-        else if (znak == '#') // odebrano znak '#'
-        {
-            if (a < 2 && b < 2 && c < 2 && ((a + b + c) % 2 == 0))
-            {
-                x1 = a;
-                x2 = b;
-            } // ustaw x1, x2
-            stank = 1;
-        } // i stank na 1
-        else
-            stank = 1; // bład - krótka strzałka na grafie
-        break;
-    case 6:
-        if (znak == '#') // odebrano znak '#'
-        {
-            if (a > 0 && a < 6 && b > 0 && ((a + b + c) % 5 == 0))
-            {
-                T1 = a * 10;
-                T2 = b * 10;
-            } // ustaw T1, T2
-            stank = 1;
-        } // i stank na 1
-        else
-            stank = 1; // bład - krótka strzałka na grafie
-        break;
-    }
 
-switch (stan)
-{
-    // ------ główny graf sterowania (co 0.1 s) ---------
-case 1:
-    Z1 = 1;
-    Z2 = 1;
-    Z3 = 0;
-    if (x1)
-    {
-        tim = T1;
-        stan = 2;
-    } // ustaw timer na T1
-    break;
-case 2:
-    Z1 = 1;
-    Z2 = 0;
-    Z3 = 0;
-    if (!tim)
-    {
-        tim = T2;
-        stan = 3;
-    }    // skonczył sie czas -> 3
-    else // albo
-        if (x2)
-    {
-        tim = T3;
-        stan = 4;
-    } // napełniono zbiornik -> 4
-    break;
-case 3:
-    Z1 = 0;
-    Z2 = 0;
-    Z3 = 0;
-    if (!tim && true)
-    {
-        tim = T1;
-        stan = 2;
-    } // koniec pauzy -> 2
-    break;
-case 4:
-    Z1 = 0;
-    Z2 = 0;
-    Z3 = 0;
-    if (!tim && true)
-    {
-        tim = 30;
-        stan = 5;
-    } // oczekiwanie dokładnie 5 s
-    break;
-case 5:
-    Z1 = 0;
-    Z2 = 0;
-    Z3 = 1;
-    if (!tim)
-    {
-        tim = 20;
-        stan = 6;
-    }    // skonczył sie czas -> 6
-    else // albo
-        if (!x1)
-        stan = 1; // opróniono zbiornik -> 1
-    break;
-case 6:
-    Z1 = 0;
-    Z2 = 0;
-    Z3 = 0;
-    if (!tim && true)
-    {
-        tim = 30;
-        stan = 5;
-    } // koniec pauzy -> 5
-    break;
-} //---------------------------------------------------------------------
-if (tim)
-    --tim; // dekrementuj timer co cykl
-L1 = Z1;
-L2 = Z2;
-L3 = Z3; // zaswiec diody LED
-         // =======================================================================
-PROGRAM_END
+			switch (stan)
+			{
+				// ------ główny graf sterowania (co 0.1 s) ---------
+			case 1: Z1 = 1;
+				Z2 = 1;
+				Z3 = 0;
+				if (x1)
+				{
+					tim = T1;
+					stan = 2;
+				} // ustaw timer na T1
+				break;
+			case 2: Z1 = 1;
+				Z2 = 0;
+				Z3 = 0;
+				if (!tim)
+				{
+					tim = T2;
+					stan = 3;
+				} // skonczył sie czas -> 3
+				else // albo
+					if (x2)
+					{
+						tim = T3;
+						stan = 4;
+					} // napełniono zbiornik -> 4
+				break;
+			case 3: Z1 = 0;
+				Z2 = 0;
+				Z3 = 0;
+				if (!tim && true)
+				{
+					tim = T1;
+					stan = 2;
+				} // koniec pauzy -> 2
+				break;
+			case 4: Z1 = 0;
+				Z2 = 0;
+				Z3 = 0;
+				if (!tim && true)
+				{
+					tim = 30;
+					stan = 5;
+				} // oczekiwanie dokładnie 5 s
+				break;
+			case 5: Z1 = 0;
+				Z2 = 0;
+				Z3 = 1;
+				if (!tim)
+				{
+					tim = 20;
+					stan = 6;
+				} // skonczył sie czas -> 6
+				else // albo
+					if (!x1) stan = 1; // opróniono zbiornik -> 1
+				break;
+			case 6: Z1 = 0;
+				Z2 = 0;
+				Z3 = 0;
+				if (!tim && true)
+				{
+					tim = 30;
+					stan = 5;
+				} // koniec pauzy -> 5
+				break;
+			} //---------------------------------------------------------------------
+			if (tim) --tim; // dekrementuj timer co cykl
+			L1 = Z1;
+			L2 = Z2;
+			L3 = Z3; // zaswiec diody LED
+			// =======================================================================
+END
+
 
 //
 // ZBYORNYCZKY EMERGENCY DUPATESTER
-//
+// 
 ////////////////////////////////////////////
+
 
 #pragma region console
 int main()
 {
-    sentToPc.push_back("");
-    while (true)
-    {
-        char c = _getche();
-        cursortext.push_back(c);
-        cursorpos++;
-        if (c == 13)
-        {
-            COM_sendToZbiorniczek(cursortext);
-            cursortext = "";
-            cursorpos = 0;
-            system("CLS");
-        }
-        if (c == 8)
-        {
-            if (cursorpos <= 0)
-                continue;
-            cursortext = cursortext.substr(0, cursortext.length() - 2);
-            cursorpos -= 1;
-        }
-    }
+	init_thread.join();
+	if (rozjeb)
+	{
+		cout << "a gdzie uart init?! brrrrt";
+		return 69;
+	}
+
+	sentToPc.emplace_back("");
+	while (true)
+	{
+		char c = _getche();
+		cursortext.push_back(c);
+		cursorpos++;
+		if (c == 13)
+		{
+			COM_sendToZbiorniczek(cursortext);
+			cursortext = "";
+			cursorpos = 0;
+			system("CLS");
+		}
+		if (c == 8)
+		{
+			if (cursorpos <= 0)
+				continue;
+			cursortext = cursortext.substr(0, cursortext.length() - 2);
+			cursorpos -= 1;
+		}
+	}
 }
 
 #pragma endregion
