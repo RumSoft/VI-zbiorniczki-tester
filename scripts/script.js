@@ -17,6 +17,24 @@ var outp = new Array(8)
 var input = inp.map((x) => null);
 var output = outp.map((x) => null);
 
+/// com
+var comsend = new Array(9)
+  .fill("comsend")
+  .map((x, i) => `${x}${i + 1}`)
+  .map((x) => document.getElementById(x));
+window.com_queue = [];
+function sendCharacterToCom(c) {
+  window.com_queue.push(c);
+}
+function COM_recv() {
+  if (!window.com_queue.length) return 0;
+  return window.com_queue.shift();
+}
+comsend.forEach((x, i) =>
+  x.addEventListener("click", () => sendCharacterToCom(i + 1))
+);
+
+///
 var startBtn = document.getElementById("start");
 var stopBtn = document.getElementById("stop");
 var variables = document.getElementById("variables");
@@ -239,6 +257,7 @@ function startProgram() {
   variables.disabled = true;
   deltatime.disabled = true;
   codeBox.display.wrapper.style.pointerEvents = "none";
+  window.com_queue = [];
 
   loopDelay = Math.max(1, Math.min(deltatime.value || 100, 1000));
   logger.Info(`Uruchamianie programu z cyklem ${loopDelay}ms`);
