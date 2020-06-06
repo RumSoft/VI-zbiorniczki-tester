@@ -177,8 +177,10 @@ function loop() {
     monitoringData.forEach((x, i) => {
       x.value = window[x.key];
       if (typeof x.value === "undefined") x.value = "-";
-      else if (x.value === 0 || x.value === false) x.value = window.przemek ? "0" : "0  ❌";
-      else if (x.value === 1 || x.value === true) x.value = window.przemek ? "1" : "1  ✔";;
+      else if (x.value === 0 || x.value === false)
+        x.value = window.przemek ? "0" : "0  ❌";
+      else if (x.value === 1 || x.value === true)
+        x.value = window.przemek ? "1" : "1  ✔";
 
       if (/.*\[.*\]/.test(x.key)) {
         let tab = x.key.split("[")[0];
@@ -200,6 +202,14 @@ inp.forEach((x, i) => x.addEventListener("click", () => io.toggleInput(i)));
 startBtn.addEventListener("click", () => startProgram());
 stopBtn.addEventListener("click", () => stopProgram());
 document.addEventListener("keypress", onKeyPress);
+
+function random(lo, hi) {
+  return Math.floor(Math.random() * (hi - lo + 1) + lo);
+}
+
+function rand() {
+  return random(0, 10000);
+}
 
 function stopProgram() {
   startBtn.disabled = false;
