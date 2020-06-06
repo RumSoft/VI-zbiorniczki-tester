@@ -177,8 +177,8 @@ function loop() {
     monitoringData.forEach((x, i) => {
       x.value = window[x.key];
       if (typeof x.value === "undefined") x.value = "-";
-      else if (x.value === 0 || x.value === false) x.value = "0  ❌";
-      else if (x.value === 1 || x.value === true) x.value = "1  ✔";
+      else if (x.value === 0 || x.value === false) x.value = window.przemek ? "0" : "0  ❌";
+      else if (x.value === 1 || x.value === true) x.value = window.przemek ? "1" : "1  ✔";;
 
       if (/.*\[.*\]/.test(x.key)) {
         let tab = x.key.split("[")[0];
@@ -214,6 +214,8 @@ function stopProgram() {
 
   io.reset();
 }
+
+var przemek = 0;
 
 function startProgram() {
   console.clear();
