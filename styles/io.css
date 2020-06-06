@@ -16,6 +16,7 @@
     width: 50px;
     height: 50px;
     margin: 10px;
+    transition: background-color 0.1s ease-out;
 }
 
 .input>div>span,
@@ -29,6 +30,7 @@
     width: 44px;
     height: 44px;
     margin: 13px;
+    transition: background-color 0.1s ease-out;
 }
 
 .output-row h4,
